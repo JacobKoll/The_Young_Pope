@@ -5,17 +5,18 @@ import discord
 import mcstatus
 import asyncio
 from discord.ext import commands
+from Env_Vars import *
 
 # The start server handles starting the server machine and launching the game server.
 async def start_server(ctx, shell):
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     await ctx.send('Starting server machine...')
-    shell.stdin.write(b'wakeonlan \n')
+    shell.stdin.write(str.encode('wakeonlan '+os.environ.get('SERVER_MAC')+'\n'))
     shell.stdin.flush()
-    while(sock.connect_ex(('', ))):
+    while(sock.connect_ex((os.environ.get('SERVER_IP'), int(os.environ.get('SERVER_PORT'))))):
         pass
     await ctx.send('Connecting to the server machine...')
-    shell.stdin.write(b'ssh \n')
+    shell.stdin.write(str.encode('ssh '+os.environ.get('SERVER_SSH_LOGIN')+'\n'))
     shell.stdin.flush()
     await ctx.send('Connected to the server machine.')
     await ctx.send('Launching game server...')
@@ -32,7 +33,7 @@ async def start_server(ctx, shell):
 # The shutdown loop handles automatically shutting down the server and the machine when no one is online.
 async def shutdown_loop(ctx, shell):
     await asyncio.sleep(20)
-    #server = mcstatus.MinecraftServer.lookup("")
+    #server = mcstatus.MinecraftServer.lookup(os.environ.get('PUBLIC_SERVER_IP')+':'+os.environ.get('PUBLIC_SERVER_PORT'))
     #players = server.status().players.online
     #while(players > 0):
     #    await ctx.send('Checking server population...')
@@ -82,4 +83,4 @@ class CigPope(discord.Client):
             else:
                 await message.channel.send('Shut the fuck up!')
 bot = CigPope()
-bot.run('')
+bot.run(os.environ.get('TEST_BOT_KEY'))
