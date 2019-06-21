@@ -1,1 +1,3 @@
-Hello World!
+If you are a randy then this bot probs wont work for you unless you have the exact same setup I do.
+
+Rename the "Env_Vars_Sample.py" to "Env_Vars.py" and fill in your private info then in the terminal "Python3 Cig_Pope.py" assuming you have gone through the bot setup discord provides.
