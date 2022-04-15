@@ -1,4 +1,4 @@
-name: CigPope
+name: cig-pope
 
 on:
   push:
@@ -14,5 +14,5 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - name: CigPopeImage
-      run: docker build . --file Dockerfile --tag CigPope:$(date +%s)
+    - name: cig-pope-image
+      run: docker build . --file Dockerfile --tag cig-pope:$(date +%s)
