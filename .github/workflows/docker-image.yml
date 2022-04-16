@@ -15,4 +15,4 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: cig-pope-image
-      run: docker build . --file Dockerfile --tag cig-pope:$(date +%s) && docker run --publish 8000:5000 cig-pope:$(date +%s)
+      run: docker build . --file Dockerfile --tag cig-pope && docker run --publish 8000:5000 cig-pope
