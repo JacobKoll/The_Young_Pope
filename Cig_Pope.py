@@ -1,26 +1,32 @@
-import os
-import asyncio
+from discord.ext import tasks
+import discord
 from Env_Vars import *
 
-class Discord():
+class CigPope(discord.Client):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
-    def __init__(self):
-        self.name = "Discord API Wraper"
+        # an attribute we can access from our task
+        self.counter = 0
 
-    def auth(self):
-        return self.name
+        # start the task to run in the background
+        self.my_background_task.start()
 
-class CigPope():
+    async def on_ready(self):
+        print('Logged in as')
+        print(self.user.name)
+        print(self.user.id)
+        print('------')
 
-    def __init__(self):
-        self.name = "CigPope"
-        self.bot_key = os.environ.get('OFICIAL_BOT_KEY')
-        self.disco = Discord()
+    @tasks.loop(seconds=60) # task runs every 60 seconds
+    async def my_background_task(self):
+        channel = self.get_channel(406684281004621824) # channel ID goes here
+        self.counter += 1
+        await channel.send(self.counter)
 
-    def start(self):
-        print(self.name)
-        print(self.bot_key)
-        print(self.disco.auth())
+    @my_background_task.before_loop
+    async def before_my_task(self):
+        await self.wait_until_ready() # wait until the bot logs in
 
 pope = CigPope()
-pope.start()
+pope.run(os.environ.get('BOT_TOKEN'))
