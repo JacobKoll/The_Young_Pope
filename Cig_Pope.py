@@ -1,32 +1,26 @@
-from discord.ext import tasks
+import random
 import discord
+from discord.ext import commands
 from Env_Vars import *
 
-class CigPope(discord.Client):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+# This example requires the 'message_content' intent.
 
-        # an attribute we can access from our task
-        self.counter = 0
+intents = discord.Intents.default()
+intents.message_content = True
 
-        # start the task to run in the background
-        self.my_background_task.start()
+client = discord.Client(intents=intents)
 
-    async def on_ready(self):
-        print('Logged in as')
-        print(self.user.name)
-        print(self.user.id)
-        print('------')
+@client.event
+async def on_ready():
+	print(f'We have logged in as {client.user}')
 
-    @tasks.loop(seconds=60) # task runs every 60 seconds
-    async def my_background_task(self):
-        channel = self.get_channel(406684281004621824) # channel ID goes here
-        self.counter += 1
-        await channel.send(self.counter)
+@client.event
+async def on_message(message):
+	if message.author == client.user:
+		return
 
-    @my_background_task.before_loop
-    async def before_my_task(self):
-        await self.wait_until_ready() # wait until the bot logs in
+	if message.content.startswith('$hello'):
+		await message.channel.send('Hello!')
 
-pope = CigPope()
-pope.run(os.environ.get('BOT_TOKEN'))
+token = os.environ.get('BOT_TOKEN')
+client.run(token)
